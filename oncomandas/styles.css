@@ -31,10 +31,10 @@ body {
    */
 
 :root {
-  --primary-color: #2196f3;
-  --primary-dark: #1976d2;
+  --primary-color: #2d8f4c;
+  --primary-dark: #1f6336;
   --secondary-color: #6c757d;
-  --success-color: #28a745;
+  --success-color: #2d8f4c;
   --danger-color: #dc3545;
   --warning-color: #ffc107;
   --light-color: #f8f9fa;

@@ -1,0 +1,25 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+
+# Ambientes virtuais
+venv/
+.venv/
+env/
+
+# Poetry
+poetry.lock  # ← alguns incluem, outros não (eu incluo)
+
+# Banco de dados (se não quiser versionar)
+*.db
+
+# IDE
+.vscode/
+.idea/
+
+#md
+*.md
+!README.md
