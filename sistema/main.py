@@ -124,6 +124,7 @@ def main(page: ft.Page):
             ]
         ),
         value="todos",
+        on_change=lambda e: atualizar_tabela(e),
     )
 
     # ===== FUNÇÕES =====
@@ -242,6 +243,8 @@ def main(page: ft.Page):
                                         on_click=cadastrar_produto,
                                         color=ft.Colors.WHITE,
                                         bgcolor="#2d8f4c",
+                                        height=50,
+                                        width=200,
                                     ),
                                 ]
                             ),
@@ -294,5 +297,6 @@ def main(page: ft.Page):
     atualizar_tabela()
 
 
-# Rodar app
-ft.run(main)
+# Rodar app com hot reload
+if __name__ == "__main__":
+    ft.app(target=main)
