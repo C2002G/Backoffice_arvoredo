@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#2196F3" />
+    <meta
+      name="description"
+      content="Sistema de comandas para bar e restaurante - PWA offline"
+    />
+
+    <title>Comandas - Areias Surf Bar</title>
+
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="manifest.json" />
+
+    <!-- Favicon e ícones -->
+    <link
+      rel="icon"
+      type="image/x-icon"
+      href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect fill='%232196F3' width='100' height='100' rx='15'/%3E%3Ctext y='70' font-size='60' text-anchor='middle' x='50' fill='white'%3E📋%3C/text%3E%3C/svg%3E"
+    />
+    <link
+      rel="apple-touch-icon"
+      href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect fill='%232196F3' width='100' height='100' rx='15'/%3E%3Ctext y='70' font-size='60' text-anchor='middle' x='50' fill='white'%3E📋%3C/text%3E%3C/svg%3E"
+    />
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <!-- Header -->
+    <header class="header">
+      <h1>📋 Comandas</h1>
+      <button id="settingsBtn" class="btn btn-secondary">⚙️</button>
+    </header>
+
+    <!-- Tela 1: Lista de Comandas -->
+    <main id="screenList" class="screen active">
+      <div class="container">
+        <div class="search-box">
+          <input
+            type="text"
+            id="searchInput"
+            placeholder="🔍 Buscar por nome do cliente..."
+            autocomplete="off"
+          />
+        </div>
+
+        <div class="action-buttons">
+          <button id="newCommandBtn" class="btn btn-primary btn-large">
+            ➕ Nova Comanda
+          </button>
+        </div>
+
+        <div id="commandsList" class="commands-list">
+          <!-- Lista de comandas será inserida aqui via JS -->
+        </div>
+
+        <div id="emptyState" class="empty-state">
+          <div class="empty-icon">📋</div>
+          <h3>Nenhuma comanda encontrada</h3>
+          <p>Crie sua primeira comanda clicando em "Nova Comanda"</p>
+        </div>
+      </div>
+    </main>
+
+    <!-- Tela 2: Criar/Editar Comanda -->
+    <main id="screenForm" class="screen">
+      <div class="container">
+        <div class="form-header">
+          <button id="backFromFormBtn" class="btn btn-secondary">
+            ← Voltar
+          </button>
+          <h2 id="formTitle">Nova Comanda</h2>
+        </div>
+
+        <form id="commandForm" class="command-form">
+          <div class="form-group">
+            <label for="clientName">Nome do Cliente *</label>
+            <input
+              type="text"
+              id="clientName"
+              required
+              placeholder="Ex: João Silva"
+              autocomplete="off"
+            />
+          </div>
+
+          <div class="form-group">
+            <label for="tableNumber">Mesa (opcional)</label>
+            <input
+              type="text"
+              id="tableNumber"
+              placeholder="Ex: 12"
+              autocomplete="off"
+            />
+          </div>
+
+          <div class="form-group">
+            <label>Adicionar Produtos do Cardápio</label>
+            <div class="product-selection">
+              <div class="product-row">
+                <select id="categorySelect" class="form-select">
+                  <option value="">Selecione uma categoria</option>
+                </select>
+              </div>
+              <div class="product-row">
+                <select id="productSelect" class="form-select">
+                  <option value="">Selecione uma categoria primeiro</option>
+                </select>
+              </div>
+              <div class="product-row">
+                <input
+                  type="number"
+                  id="productQuantity"
+                  class="form-input-small"
+                  value="1"
+                  min="1"
+                  placeholder="Qtd"
+                />
+                <input
+                  type="text"
+                  id="productObservation"
+                  class="form-input-flex"
+                  placeholder="Observação (opcional)"
+                  autocomplete="off"
+                />
+                <button
+                  type="button"
+                  id="addProductBtn"
+                  class="btn btn-primary"
+                >
+                  ➕ Adicionar
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>Itens do Pedido</label>
+            <div class="items-container">
+              <div id="itemsList" class="items-list">
+                <!-- Itens serão inseridos aqui via JS -->
+              </div>
+              <div class="order-total">
+                <strong>Total: <span id="orderTotal">R$ 0,00</span></strong>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>Adicionar Item Personalizado (opcional)</label>
+            <div class="add-item-box">
+              <input
+                type="text"
+                id="newItem"
+                placeholder="Ex: Item especial do cliente"
+                autocomplete="off"
+              />
+              <button type="button" id="addItemBtn" class="btn btn-secondary">
+                ➕ Item Personalizado
+              </button>
+            </div>
+          </div>
+
+          <div class="form-actions">
+            <button type="submit" class="btn btn-primary btn-large">
+              💾 Salvar Comanda
+            </button>
+          </div>
+        </form>
+      </div>
+    </main>
+
+    <!-- Tela 3: Visualizar Comanda -->
+    <main id="screenView" class="screen">
+      <div class="container">
+        <div class="form-header">
+          <button id="backFromViewBtn" class="btn btn-secondary">
+            ← Voltar
+          </button>
+          <div class="view-actions">
+            <button id="editCommandBtn" class="btn btn-secondary">✏️</button>
+            <button id="deleteCommandBtn" class="btn btn-danger">🗑️</button>
+          </div>
+        </div>
+
+        <div id="commandDetails" class="command-details">
+          <!-- Detalhes da comanda serão inseridos aqui via JS -->
+        </div>
+
+        <div class="view-actions-bottom">
+          <button id="copyCommandBtn" class="btn btn-primary btn-large">
+            📋 Copiar para WhatsApp
+          </button>
+        </div>
+      </div>
+    </main>
+
+    <!-- Tela 4: Configurações -->
+    <main id="screenSettings" class="screen">
+      <div class="container">
+        <div class="form-header">
+          <button id="backFromSettingsBtn" class="btn btn-secondary">
+            ← Voltar
+          </button>
+          <h2>Configurações</h2>
+        </div>
+
+        <div class="settings-content">
+          <div class="stats-box">
+            <h3>📊 Estatísticas</h3>
+            <p>Total de comandas: <strong id="totalCommands">0</strong></p>
+            <p>Comandas hoje: <strong id="todayCommands">0</strong></p>
+          </div>
+
+          <div class="danger-zone">
+            <h3>⚠️ Zona de Perigo</h3>
+            <p>Esta ação não pode ser desfeita!</p>
+            <button id="deleteAllBtn" class="btn btn-danger btn-large">
+              🗑️ Apagar Todas as Comandas
+            </button>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <!-- Overlay para confirmações -->
+    <div id="overlay" class="overlay">
+      <div class="modal">
+        <h3 id="modalTitle">Confirmar ação</h3>
+        <p id="modalText">Tem certeza que deseja continuar?</p>
+        <div class="modal-actions">
+          <button id="modalCancel" class="btn btn-secondary">Cancelar</button>
+          <button id="modalConfirm" class="btn btn-danger">Confirmar</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Toast para notificações -->
+    <div id="toast" class="toast">
+      <span id="toastText"></span>
+    </div>
+
+    <!-- JavaScript -->
+    <script src="app.js"></script>
+  </body>
+</html>

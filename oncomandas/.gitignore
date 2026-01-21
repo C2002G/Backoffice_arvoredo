@@ -1,0 +1,128 @@
+# =====================================
+# GITIGNORE - Sistema de Comandas PWA
+# =====================================
+
+# Arquivos do sistema operacional
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+desktop.ini
+
+# Arquivos temporários do Windows
+*.tmp
+*.temp
+*.swp
+*.swo
+*~
+
+# Logs e arquivos de debug
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+logs/
+*.log.*
+
+# Arquivos de IDE/Editor
+.vscode/settings.json
+.vscode/launch.json
+.vscode/extensions.json
+.idea/
+*.swp
+*.swo
+*.sublime-*
+.atom/
+
+# Cache do navegador (para desenvolvimento)
+.cache/
+dist/
+build/
+
+# Arquivos de backup
+*.bak
+*.backup
+*.old
+*.orig
+
+# Arquivos de teste local
+test-data/
+*.test.js
+coverage/
+
+# Arquivos de deploy temporários
+deploy/
+tmp/
+temp/
+
+# Configurações locais de desenvolvimento
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+config.local.js
+
+# Arquivos do Node.js (caso use no futuro)
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+package-lock.json
+yarn.lock
+
+# Arquivos Python (caso use servidor local)
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Arquivos de análise e relatórios
+lighthouse-report.html
+bundle-analyzer-report.html
+.nyc_output
+coverage/
+
+# Arquivos específicos do projeto
+# (descomente se necessário)
+# dados-teste.json
+# backup-comandas.json
+# screenshots/
+
+# Arquivos de sistema do Git
+.git/
+.gitattributes
+
+# Arquivos de empacotamento
+*.tar.gz
+*.zip
+*.rar
+*.7z
+
+# Certificados SSL locais
+*.pem
+*.key
+*.crt
+*.cert
+
+# Arquivos de documentação (não enviar para produção)
+APRESENTACAO-DONO.md
+DEPLOY.md
+README-DEPLOY.md
+TESTES.md
+
+# ===========================================
+# IMPORTANTE: MANTER ESTES ARQUIVOS NO GIT
+# ===========================================
+# ✅ index.html
+# ✅ app.js  
+# ✅ styles.css
+# ✅ sw.js
+# ✅ manifest.json
+# ✅ README.md
