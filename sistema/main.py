@@ -54,7 +54,7 @@ def criar_header(page, mudar_tela_fn):
             ],
             spacing=10,
         ),
-        bgcolor=COR_PRIMARIA,
+        bgcolor=COR_PRIMARIA_ESCURA,
         padding=15,
         border_radius=10,
     )
@@ -62,7 +62,7 @@ def criar_header(page, mudar_tela_fn):
     return header
 
 
-# ===== TELA 1: CADASTRAR PRODUTOS =====
+# ===== TELA 1: CADASTRAR PRODUTOS =====    
 def criar_tela_cadastro(page, atualizar_fn):
     """Tela para cadastrar novos produtos e suas marcas"""
 
