@@ -399,3 +399,30 @@ def listar_vendas() -> List:
     vendas = cursor.fetchall()
     conn.close()
     return vendas
+
+
+def deletar_produto(produto_id: int) -> Tuple[bool, str]:
+    """Deleta um produto e todas as suas marcas e históricos"""
+    try:
+        conn = get_connection()
+        cursor = conn.cursor()
+
+        # Primeiro, deleta os históricos das marcas do produto
+        cursor.execute(
+            """DELETE FROM historico_movimentacao 
+               WHERE produto_marca_id IN 
+               (SELECT id FROM produto_marcas WHERE produto_id = ?)""",
+            (produto_id,),
+        )
+
+        # Deleta as marcas do produto
+        cursor.execute("DELETE FROM produto_marcas WHERE produto_id = ?", (produto_id,))
+
+        # Deleta o produto
+        cursor.execute("DELETE FROM produtos WHERE id = ?", (produto_id,))
+
+        conn.commit()
+        conn.close()
+        return True, "Produto deletado com sucesso!"
+    except Exception as e:
+        return False, f"Erro: {str(e)}"

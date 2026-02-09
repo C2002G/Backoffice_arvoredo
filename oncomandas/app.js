@@ -239,6 +239,7 @@ const elements = {
   // Lista de itens (mantido para compatibilidade)
   newItem: document.getElementById("newItem"),
   addItemBtn: document.getElementById("addItemBtn"),
+  clearAllItemsBtn: document.getElementById("clearAllItemsBtn"),
   itemsList: document.getElementById("itemsList"),
 
   // Visualização
@@ -873,25 +874,43 @@ function addSelectedProduct() {
     return;
   }
 
-  // Criar item do pedido
-  const item = {
-    id: generateId(),
-    produtoId: product.id,
-    nome: product.nome,
-    preco: product.preco,
-    quantidade: quantity,
-    observacao: observation,
-    categoria: category.nome,
-    subtotal: product.preco * quantity,
-  };
-
-  // Adicionar à lista atual
+  // Obter itens atuais
   const currentItems = getCurrentItems();
-  currentItems.push(item);
+  
+  // Verificar se o produto já existe na lista
+  const existingItemIndex = currentItems.findIndex(
+    item => item.produtoId === product.id && item.observacao === observation
+  );
 
-  // Se estamos editando, adiciona ao currentCommand
+  if (existingItemIndex !== -1) {
+    // Se existe, soma a quantidade
+    currentItems[existingItemIndex].quantidade += quantity;
+    currentItems[existingItemIndex].subtotal = 
+      currentItems[existingItemIndex].preco * currentItems[existingItemIndex].quantidade;
+    showToast("Quantidade atualizada no mesmo item", "success");
+  } else {
+    // Criar novo item do pedido
+    const item = {
+      id: generateId(),
+      produtoId: product.id,
+      nome: product.nome,
+      preco: product.preco,
+      quantidade: quantity,
+      observacao: observation,
+      categoria: category.nome,
+      subtotal: product.preco * quantity,
+    };
+
+    // Adicionar à lista
+    currentItems.push(item);
+    showToast("Produto adicionado ao pedido", "success");
+  }
+
+  // Se estamos editando, atualiza currentCommand
   if (appState.isEditing && appState.currentCommand) {
     appState.currentCommand.items = currentItems;
+  } else {
+    appState.tempItems = currentItems;
   }
 
   // Renderizar lista atualizada
@@ -902,8 +921,6 @@ function addSelectedProduct() {
   elements.productSelect.value = "";
   elements.productQuantity.value = "1";
   elements.productObservation.value = "";
-
-  showToast("Produto adicionado ao pedido", "success");
 }
 
 /**
@@ -1142,6 +1159,28 @@ function removeItem(itemId) {
     );
     renderItemsList(appState.tempItems);
     updateOrderTotal(appState.tempItems);
+  }
+  showToast("Item removido", "success");
+}
+
+/**
+ * Limpa todos os itens do pedido
+ */
+async function clearAllItems() {
+  const confirmed = await showConfirmModal(
+    "Limpar Todos os Itens",
+    "Tem certeza que deseja remover todos os itens do pedido?"
+  );
+
+  if (confirmed) {
+    if (appState.isEditing && appState.currentCommand) {
+      appState.currentCommand.items = [];
+    } else {
+      appState.tempItems = [];
+    }
+    renderItemsList([]);
+    updateOrderTotal([]);
+    showToast("Todos os itens foram removidos", "success");
   }
 }
 
@@ -1490,6 +1529,7 @@ function setupEventListeners() {
   // Formulário
   elements.commandForm?.addEventListener("submit", handleFormSubmit);
   elements.addItemBtn?.addEventListener("click", addItem);
+  elements.clearAllItemsBtn?.addEventListener("click", clearAllItems);
 
   // Seleção de produtos
   elements.categorySelect?.addEventListener("change", updateProductSelect);
