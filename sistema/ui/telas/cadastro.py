@@ -118,7 +118,9 @@ def criar_tela_cadastro(page, atualizar_fn, mudar_tela_fn):
     def atualizar_lista():
         produtos_list.controls.clear()
         produtos = listar_produtos()
-        for prod in produtos:
+        # Ordenar produtos em ordem decrescente (últimos adicionados primeiro)
+        produtos_ordenados = sorted(produtos, key=lambda x: x["id"], reverse=True)
+        for prod in produtos_ordenados:
             marcas = listar_marcas_produto(prod["id"])
             marcas_texto = ", ".join(
                 [f"{m['marca']} ({m['quantidade']})" for m in marcas]
@@ -208,7 +210,23 @@ def criar_tela_cadastro(page, atualizar_fn, mudar_tela_fn):
                 )
             ),
             ft.Divider(),
-            ft.Text("Produtos Cadastrados", size=18, weight="bold", color=COR_PRIMARIA),
+            ft.Row(
+                [
+                    ft.Text(
+                        "Produtos Cadastrados",
+                        size=18,
+                        weight="bold",
+                        color=COR_PRIMARIA,
+                    ),
+                    ft.IconButton(
+                        icon=ft.Icons.REFRESH,
+                        icon_size=24,
+                        tooltip="Atualizar lista",
+                        on_click=lambda e: atualizar_lista(),
+                    ),
+                ],
+                alignment=ft.MainAxisAlignment.SPACE_BETWEEN,
+            ),
             ft.Container(content=produtos_list, expand=True, height=400),
         ],
         spacing=15,
