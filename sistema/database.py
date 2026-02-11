@@ -42,6 +42,7 @@ def inicializar_db():
             preco_unitario REAL NOT NULL,
             quantidade INTEGER DEFAULT 0,
             data_cadastro TEXT,
+            data_validade TEXT,
             FOREIGN KEY (produto_id) REFERENCES produtos(id)
         )
     """
@@ -107,6 +108,13 @@ def inicializar_db():
     """
     )
 
+    # Migração: Adicionar coluna data_validade se não existir
+    try:
+        cursor.execute("ALTER TABLE produto_marcas ADD COLUMN data_validade TEXT")
+    except sqlite3.OperationalError:
+        # Coluna já existe, ignora o erro
+        pass
+
     conn.commit()
     conn.close()
 
@@ -132,21 +140,22 @@ def inserir_produto(nome: str, categoria: str) -> Tuple[bool, str, int]:
 
 
 def inserir_marca_produto(
-    produto_id: int, codigo: str, marca: str, preco: float
+    produto_id: int, codigo: str, marca: str, preco: float, data_validade: str = ""
 ) -> Tuple[bool, str]:
     """Insere uma marca específica de um produto"""
     try:
         conn = get_connection()
         cursor = conn.cursor()
         cursor.execute(
-            """INSERT INTO produto_marcas (produto_id, codigo, marca, preco_unitario, data_cadastro)
-               VALUES (?, ?, ?, ?, ?)""",
+            """INSERT INTO produto_marcas (produto_id, codigo, marca, preco_unitario, data_cadastro, data_validade)
+               VALUES (?, ?, ?, ?, ?, ?)""",
             (
                 produto_id,
                 codigo,
                 marca,
                 preco,
                 datetime.now().strftime("%d/%m/%Y %H:%M"),
+                data_validade,
             ),
         )
         conn.commit()
@@ -165,7 +174,7 @@ def listar_produtos() -> List:
     cursor = conn.cursor()
     cursor.execute(
         """
-        SELECT p.id, p.nome, p.categoria, 
+        SELECT p.id, p.nome, p.categoria, p.data_criacao,
                COUNT(pm.id) as total_marcas,
                SUM(pm.quantidade) as quantidade_total,
                SUM(pm.quantidade * pm.preco_unitario) as valor_total
@@ -186,7 +195,7 @@ def listar_marcas_produto(produto_id: int) -> List:
     cursor = conn.cursor()
     cursor.execute(
         """
-        SELECT pm.id, pm.codigo, pm.marca, pm.preco_unitario, pm.quantidade, pm.data_cadastro
+        SELECT pm.id, pm.codigo, pm.marca, pm.preco_unitario, pm.quantidade, pm.data_cadastro, pm.data_validade
         FROM produto_marcas pm
         WHERE pm.produto_id = ?
         ORDER BY pm.marca

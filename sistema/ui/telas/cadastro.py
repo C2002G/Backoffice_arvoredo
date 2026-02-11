@@ -1,6 +1,7 @@
 """
 Tela de Cadastro de Produtos
 """
+
 import flet as ft
 from database import (
     listar_produtos,
@@ -10,6 +11,7 @@ from database import (
     atualizar_quantidade_marca,
 )
 from ui.componentes import COR_PRIMARIA
+
 
 def criar_tela_cadastro(page, atualizar_fn, mudar_tela_fn):
     """Tela para cadastrar novos produtos e suas marcas"""
@@ -32,11 +34,19 @@ def criar_tela_cadastro(page, atualizar_fn, mudar_tela_fn):
     qtd_marca = ft.TextField(
         label="Quantidade", width=150, keyboard_type="number", value="0"
     )
+    validade = ft.TextField(
+        label="Validade (DD/MM/YYYY)", width=150, hint_text="Ex: 31/12/2025"
+    )
 
     msg_status = ft.Text("", color=ft.Colors.RED)
 
     def cadastrar(e):
-        if not nome_prod.value or not categoria_dd.value or not marca_nome.value:
+        if (
+            not nome_prod.value
+            or not categoria_dd.value
+            or not marca_nome.value
+            or not validade.value
+        ):
             msg_status.value = "❌ Preencha todos os campos!"
             msg_status.color = ft.Colors.RED
             page.update()
@@ -71,6 +81,7 @@ def criar_tela_cadastro(page, atualizar_fn, mudar_tela_fn):
             codigo_marca.value or f"PROD{prod_id}",
             marca_nome.value,
             float(preco_un.value or 0),
+            validade.value,
         )
 
         if sucesso2 and marca_id != -1:
@@ -88,6 +99,7 @@ def criar_tela_cadastro(page, atualizar_fn, mudar_tela_fn):
             preco_un.value = ""
             qtd_marca.value = "0"
             codigo_marca.value = ""
+            validade.value = ""
 
             atualizar_fn()
         else:
@@ -125,7 +137,7 @@ def criar_tela_cadastro(page, atualizar_fn, mudar_tela_fn):
                                         color=ft.Colors.GREY_700,
                                     ),
                                     ft.Text(
-                                        f"Marcas: {marcas_texto}",
+                                        f"Marca: {marcas_texto}",
                                         size=11,
                                         color=ft.Colors.GREY_700,
                                     ),
@@ -133,6 +145,11 @@ def criar_tela_cadastro(page, atualizar_fn, mudar_tela_fn):
                                         f"Total: {prod['quantidade_total'] or 0} un | Valor: R$ {prod['valor_total'] or 0:.2f}",
                                         weight="bold",
                                         color=COR_PRIMARIA,
+                                    ),
+                                    ft.Text(
+                                        f"Data Registro: {prod['data_criacao'] or 'N/A'} | Validade: {', '.join([m['data_validade'] or 'N/A' for m in marcas]) if marcas else 'N/A'}",
+                                        size=10,
+                                        color=ft.Colors.GREY_700,
                                     ),
                                 ],
                                 spacing=5,
@@ -174,6 +191,7 @@ def criar_tela_cadastro(page, atualizar_fn, mudar_tela_fn):
                                 [codigo_marca, marca_nome, preco_un, qtd_marca],
                                 wrap=True,
                             ),
+                            ft.Row([validade], wrap=True),
                             ft.ElevatedButton(
                                 "➕ Cadastrar Produto",
                                 on_click=cadastrar,
