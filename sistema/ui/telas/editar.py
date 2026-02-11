@@ -12,7 +12,7 @@ from database import (
 from ui.componentes import COR_PRIMARIA
 
 
-def criar_tela_editar(page):
+def criar_tela_editar(page, mudar_tela_fn=None):
     """Tela para editar produtos com tabela tipo explorer"""
 
     # Estado da tabela
@@ -246,22 +246,38 @@ def criar_tela_editar(page):
         linhas = []
         for idx, item in enumerate(dados):
 
+            def abrir_produto_completo(e, produto_id=item["produto_id"]):
+                """Abre página de edição do produto completo"""
+                from ui.telas.editar_produto import criar_tela_editar_produto
+
+                conteudo = page.data.get("conteudo")
+                if conteudo:
+                    conteudo.controls.clear()
+                    conteudo.controls.append(
+                        criar_tela_editar_produto(
+                            page, produto_id=produto_id, mudar_tela_fn=mudar_tela_fn
+                        )
+                    )
+                    page.update()
+
             def handle_selection(e, indice=idx):
                 """Handler para seleção de linhas"""
-                if indice in estado_tabela["linhas_selecionadas"]:
-                    # Se já está selecionada, abre editor
-                    abrir_editor(indice)
-                else:
-                    # Senão, seleciona
-                    estado_tabela["linhas_selecionadas"].clear()
+                if e.control.selected:
                     estado_tabela["linhas_selecionadas"].add(indice)
-                    estado_tabela["ultima_clicada"] = indice
-                    atualizar_tabela()
+                else:
+                    estado_tabela["linhas_selecionadas"].discard(indice)
+                estado_tabela["ultima_clicada"] = indice
 
             linhas.append(
                 ft.DataRow(
                     cells=[
-                        ft.DataCell(ft.Text(item["nome"], size=11)),
+                        ft.DataCell(
+                            ft.TextButton(
+                                item["nome"],
+                                on_click=abrir_produto_completo,
+                                style=ft.ButtonStyle(color=COR_PRIMARIA),
+                            )
+                        ),
                         ft.DataCell(ft.Text(item["marca"], size=11)),
                         ft.DataCell(ft.Text(f"R$ {item['valor']:.2f}", size=11)),
                         ft.DataCell(ft.Text(item["categoria"], size=11)),
@@ -347,7 +363,7 @@ def criar_tela_editar(page):
         atualizar_tabela()
 
     info_texto = ft.Text(
-        "💡 Clique nas colunas para ordenar | Clique sobre uma linha para selecioná-la | Clique novamente na linha selecionada para editar",
+        "💡 Use os quadrados para selecionar linhas | Clique no nome do produto para editar todas as informações | Use os botões abaixo para editar ou deletar",
         size=10,
         color=ft.Colors.GREY_700,
     )

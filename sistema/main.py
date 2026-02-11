@@ -1,7 +1,8 @@
-""" 
+"""
 Main - Sistema Arvoredo
 Arquivo principal - orquestra as telas
 """
+
 import flet as ft
 from database import inicializar_db
 from ui.componentes import criar_header, COR_PRIMARIA, COR_SECUNDARIA
@@ -25,8 +26,14 @@ def main(page: ft.Page):
 
     inicializar_db()
 
+    # Inicializar page.data como dicionário
+    page.data = {}
+
     # Container principal
     conteudo = ft.Column(expand=True, scroll="auto")
+
+    # Guardar referência para uso nas telas
+    page.data["conteudo"] = conteudo
 
     # Dicionário de telas
     telas = {}
@@ -47,9 +54,9 @@ def main(page: ft.Page):
         ),
         mudar_tela,
     )
-    
+
     telas["cadastro"] = tela_cadastro
-    telas["editar"] = criar_tela_editar(page)
+    telas["editar"] = criar_tela_editar(page, mudar_tela)
     telas["vendas"] = criar_tela_vendas(page)
     telas["clientes"] = criar_tela_clientes(page)
     telas["pedidos"] = criar_tela_pedidos(page)
